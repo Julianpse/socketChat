@@ -8,12 +8,25 @@
 </head>
 <style>
 
+body{
+  background-color: #89d1ce !important;
+}
+
+h1{
+  color: white !important;
+}
+
 .jumbotron{
   max-width: 50%;
+  margin-left: 25%;
+  margin-top: 10%;
 }
 
 .navbar-header{
   text-align: center;
+  background-color: black;
+  padding-bottom: 20px;
+  padding-top: 20px;
 }
 
 
@@ -27,12 +40,13 @@
     </nav>
   </header>
   <div class="container login">
+
   <div class="jumbotron">
     <form action = "/chat" method = "POST">
       <div class="form-group">
-        <label>Enter Your Name</label>
-        <input name ="name" type="text" class="form-control" placeholder="Your name">
-        <small class="form-text text-muted">Enter Your Name</small>
+        <label>Name:</label>
+        <input name ="name" type="text" class="form-control" placeholder="Enter your name">
+        <small class="form-text text-muted">This will be displayed to the users</small>
       </div>
       <button type="submit" class="btn btn-primary">Join The Chat</button>
     </form>
