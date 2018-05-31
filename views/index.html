@@ -1,41 +1,196 @@
-<!doctype html>
-<html>
-  <head>
-    <title>Socket.IO chat</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-    </style>
-  </head>
-  <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Socket.IO chat</title>
+
+  <!--Bootstrap-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<style>
+  /* Style the header with a grey background and some padding */
+
+  .header {
+    overflow: hidden;
+    background-color: #f1f1f1;
+    padding: 20px 10px;
+  }
+
+  /* Style the header links */
+
+  .header a {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
+    border-radius: 4px;
+  }
+
+  /* Style the logo link (notice that we set the same value of line-height and font-size to prevent the header to increase when the font gets bigger */
+
+  .navbar-brand {
+    font-size: 30px;
+    font-weight: bold;
+    color:black;
+  }
+
+  /* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */
+
+  @media screen and (max-width: 500px) {
+    .header a {
+      float: none;
+      display: block;
+      text-align: left;
+    }
+    .header-right {
+      float: none;
+    }
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font: 13px Helvetica, Arial;
+  }
+
+  form {
+    background: #000;
+    padding: 3px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  form input {
+    border: 0;
+    padding: 10px;
+    width: 80%;
+    margin-right: .5%;
+  }
+
+  form button {
+    width: 19%;
+    background: rgb(130, 224, 255);
+    border: none;
+    padding: 10px;
+  }
+
+  #messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #messages li {
+    padding: 5px 10px;
+  }
+
+  #messages li:nth-child(odd) {
+    background: #eee;
+  }
+
+  #activeUsers {
+    background-color: #eee;
+    height: 100vh;
+    list-style-type: none;
+    font-size: 15px;
+    padding-left: -100px;
+  }
+
+  #userHeading {
+    margin-left: 30%;
+  }
+
+  #userNames {
+    margin-left:10%;
+  }
+
+  .well {
+    overflow-y: scroll;
+    height:100vh;
+  }
+
+  .nopadding {
+     padding: 0 !important;
+     margin: 0 !important;
+  }
+
+  .textBoxSpace {
+    padding-left: 18px !important;
+  }
+
+  @media screen only and (max-width: 576px) {
+    .well {
+      height:150px !important;
+    }
+  }
+
+</style>
+</head>
+
+<body>
+  <div class="header">
+    <a href="#default" class="navbar-brand">Friendly Chat</a>
+  </div>
+  <div class="row">
+    <div class="col-sm-9 col-md-9 col-lg-9 nopadding textBoxSpace">
+      <div class="well">
+      <ul id="messages"></ul>
+      <form action="">
+        <input id="m" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
+    </div>
+    <div class="col-sm-3 col-md-3 col-lg-3 nopadding">
+      <div class="well">
+        <ul id="activeUsers">
+          <div id="userHeading">
+          <h5>Active Users</h5>
+          <br>
+        </div>
+          <div id="userNames">
+            <li>John</li>
+            <li>Kim</li>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!--Bootstrap-->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
+  <script>
     // FIXME: insecure - should double sanitize the variables
     var userName = '{{name}}'
 
-    $(function () {
+    $(function() {
       var socket = io();
-      $('form').submit(function(){
+      $('form').submit(function() {
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
         return false;
       });
-      socket.on('chat message', function(msg){
+      socket.on('chat message', function(msg) {
         $('#messages').append($('<li>').text(userName + ": " + msg));
       });
     });
+  </script>
+</body>
 
-    </script>
-  </body>
 </html>

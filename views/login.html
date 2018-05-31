@@ -6,7 +6,27 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Login Screen Chat</title>
 </head>
+<style>
+
+.jumbotron{
+  max-width: 50%;
+}
+
+.navbar-header{
+  text-align: center;
+}
+
+
+</style>
 <body>
+  <header>
+    <nav>
+      <div class="navbar-header">
+        <h1>Friendly chat</h1>
+      </div>
+    </nav>
+  </header>
+  <div class="container login">
   <div class="jumbotron">
     <form action = "/chat" method = "POST">
       <div class="form-group">
@@ -16,6 +36,7 @@
       </div>
       <button type="submit" class="btn btn-primary">Join The Chat</button>
     </form>
+    </div>
     </div>
 </body>
 <!--Bootstrap 4 -->

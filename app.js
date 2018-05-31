@@ -21,6 +21,7 @@ var users = {
   id: "ID"
 };
 
+
 function uuid() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
@@ -31,15 +32,16 @@ function uuid() {
   return uniqueID;
 }
 
-function validateName(nameInput){
-  var usernameRegex = /^[a-zA-Z0-9]+$/;
-  var validfirstUsername = nameInput.match(usernameRegex);
-  if(validfirstUsername == null){
-    alert("Your username is not valid. Only characters A-Z, a-z and '-' are  acceptable.");
-    document.frm.firstName.focus();
-    return false;
-  }
-}
+// TODO - Finish username validation Function
+// function validateName(nameInput){
+//   var usernameRegex = /^[a-zA-Z0-9]+$/;
+//   var validfirstUsername = nameInput.match(usernameRegex);
+//   if(validfirstUsername == null){
+//     alert("Your username is not valid. Only characters A-Z, a-z and '-' are  acceptable.");
+//     document.frm.firstName.focus();
+//     return false;
+//   }
+// }
 
 app.get('/', function (req, res) {
   res.render('login.html');
@@ -49,10 +51,11 @@ app.post('/chat', function(req, res) {
     var data = req.body;
     var userId = uuid();
 
+
     users[userId] = data.name;
     // TODO: validate that the name is valid here
     // should be limited to regex [a-zA-Z0-9] (or similar)
-    validateName(data);
+    // validateName(data);
 
     // if (nameIsValid(data.name)) {
     //   theUser = data.name
@@ -71,6 +74,7 @@ app.get('/chat', function (req, res) {
 });
 
 io.on('connection', function(socket){
+  console.log(users);
   console.log('a user connected');
   socket.on('disconnect', function(){
     console.log('user disconnected');
@@ -88,6 +92,7 @@ io.on('connection', function(socket){
     io.emit('chat message', msg);
   });
 });
+
 
 http.listen(3000, function() {
   console.log('litening on *:3000');
